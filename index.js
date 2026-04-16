@@ -39,12 +39,6 @@ const db = mysql.createPool({
 console.log('MySQL pool létrehozva!');
 
 
-const COOKIE_OPTS={
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-
-}
 
 // ─── MULTER BEÁLLÍTÁS (szavazás projektből átvéve) ────────────────────────────
 const storage = multer.diskStorage({
