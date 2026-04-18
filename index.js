@@ -79,7 +79,7 @@ app.post('/api/upload', upload.single('kep'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, message: 'Nincs feltöltött fájl!' });
     }
-    const imageUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
+    const imageUrl = `https://nodejs313.dszcbaross.edu.hu/uploads/${req.file.filename}`;
     res.json({ success: true, url: imageUrl, filename: req.file.filename });
 });
 
@@ -92,7 +92,7 @@ app.get('/api/images', async (req, res) => {
             .filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f))
             .map(f => ({
                 filename: f,
-                url: `http://localhost:${PORT}/uploads/${f}`
+                url: `https://nodejs313.dszcbaross.edu.hu/uploads/${f}`
             }));
         res.json({ success: true, images });
     } catch (err) {
