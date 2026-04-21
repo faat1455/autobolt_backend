@@ -1,42 +1,44 @@
-// Ezt az első projektben már működő server.js-be kell integrálni
-
-// ─── FONTOSABB MÓDOSÍTÁSOK ─────────────────────────────────────────────────
-
-// 1. TOP-on ADD meg ezeket:
 require('dotenv').config()
 
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
+const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs/promises');
-const cookieParser = require('cookie-parser');  // ✅ ÚJ
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const PORT = process.env.PORT;
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN
 
-// ✅ ÚJ: Cookie beállítás
+// ✅ Cookie beállítás
 const COOKIE_NAME = 'auth_token';
 const COOKIE_OPTS = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',  // prod-ban true
-    sameSite: 'strict',
+    secure: true,
+    sameSite: 'none',
     path: '/',
-    maxAge: 7 * 24 * 60 * 60 * 1000  // 7 nap
+    maxAge: 7 * 24 * 60 * 60 * 1000
 };
 
 // --- Middleware ---
-app.use(cors({ origin: '*', credentials: true }));
+app.use(cors({ 
+  origin: function(origin, callback) {
+    callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-app.use(cookieParser());  // ✅ ÚJ - cookie parser middleware
+app.use(cookieParser());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // --- Adatbázis ---
@@ -62,13 +64,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// ─── JWT MIDDLEWARE - MÓDOSÍTOTT ───────────────────────────────────────────
+// ─── JWT MIDDLEWARE ────────────────────────────────────────────────────────
 function verifyToken(req, res, next) {
-    // 1. Próbálja az Authorization header-ből
     const authHeader = req.headers['authorization'];
     let token = authHeader && authHeader.split(' ')[1];
     
-    // 2. Ha nincs, próbálja a cookie-ból
     if (!token && req.cookies && req.cookies[COOKIE_NAME]) {
         token = req.cookies[COOKIE_NAME];
     }
@@ -91,12 +91,13 @@ function verifyAdmin(req, res, next) {
 //  KÉP VÉGPONTOK
 // ═══════════════════════════════════════════════════════════════════════════════
 
+// ✅ MÓDOSÍTOTT: Csak filename mentése
 app.post('/api/upload', upload.single('kep'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, message: 'Nincs feltöltött fájl!' });
     }
-    const imageUrl = `https://nodejs313.dszcbaross.edu.hu/uploads/${req.file.filename}`;
-    res.json({ success: true, url: imageUrl, filename: req.file.filename });
+    // ✅ Csak a filename megy vissza!
+    res.json({ success: true, filename: req.file.filename });
 });
 
 app.get('/api/images', async (req, res) => {
@@ -106,8 +107,7 @@ app.get('/api/images', async (req, res) => {
         const images = files
             .filter(f => /\.(jpg|jpeg|png|gif|webp)$/i.test(f))
             .map(f => ({
-                filename: f,
-                url: `https://nodejs313.dszcbaross.edu.hu/uploads/${f}`
+                filename: f
             }));
         res.json({ success: true, images });
     } catch (err) {
@@ -138,7 +138,7 @@ app.post('/api/users/register', async (req, res) => {
         if (err) return res.status(500).json({ success: false, message: 'Adatbázis hiba!', error: err });
         if (results.length > 0) return res.status(409).json({ success: false, message: 'Ez az email cím vagy felhasználónév már foglalt!' });
         try {
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await bcryptjs.hash(password, 10);
             db.query('INSERT INTO felhasznalok (felhasznalonev, email, jelszo, admin) VALUES (?, ?, ?, 0)', [nev, email, hashedPassword], (err, result) => {
                 if (err) return res.status(500).json({ success: false, message: 'Adatbázis hiba!', error: err });
                 res.status(201).json({ success: true, message: 'Sikeres regisztráció!', id: result.insertId });
@@ -149,7 +149,6 @@ app.post('/api/users/register', async (req, res) => {
     });
 });
 
-// ✅ MÓDOSÍTOTT: Login - httpOnly cookie-t ír
 app.post('/api/users/login', (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ success: false, message: 'Email és jelszó megadása kötelező!' });
@@ -159,11 +158,10 @@ app.post('/api/users/login', (req, res) => {
         if (results.length === 0) return res.status(401).json({ success: false, message: 'Hibás email vagy jelszó!' });
         const user = results[0];
         try {
-            const match = await bcrypt.compare(password, user.jelszo);
+            const match = await bcryptjs.compare(password, user.jelszo);
             if (!match) return res.status(401).json({ success: false, message: 'Hibás email vagy jelszó!' });
             const token = jwt.sign({ id: user.id, email: user.email, felhasznalonev: user.felhasznalonev, admin: user.admin }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
             
-            // ✅ httpOnly cookie-ba menti a tokent
             res.cookie(COOKIE_NAME, token, COOKIE_OPTS);
             
             res.json({ 
@@ -182,7 +180,6 @@ app.post('/api/users/login', (req, res) => {
     });
 });
 
-// ✅ ÚJ: Logout endpoint
 app.post('/api/users/logout', verifyToken, (req, res) => {
     res.clearCookie(COOKIE_NAME, { path: '/' });
     res.status(200).json({ success: true, message: 'Sikeres kijelentkezés!' });
@@ -222,7 +219,7 @@ app.put('/api/users/:id', verifyToken, async (req, res) => {
     if (email) { fields.push('email = ?'); values.push(email); }
     if (password) {
         if (password.length < 6) return res.status(400).json({ success: false, message: 'A jelszónak legalább 6 karakter hosszúnak kell lennie!' });
-        const hashed = await bcrypt.hash(password, 10);
+        const hashed = await bcryptjs.hash(password, 10);
         fields.push('jelszo = ?'); values.push(hashed);
     }
     if (fields.length === 0) return res.status(400).json({ success: false, message: 'Nincs módosítandó adat!' });
