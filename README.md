@@ -5,21 +5,6 @@
 
 ---
 
-## 📋 Tartalomjegyzék
-
-- [Fejlesztési környezet](#fejlesztesi-kornyezet)
-- [Adatbázis](#adatbazis)
-- [Backend](#backend)
-  - [Telepítés és futtatás](#telepites-es-futtatas)
-  - [Mappa struktúra](#mappa-struktura)
-  - [Használt packagek](#hasznalt-packagek)
-  - [Biztonság](#biztonsag)
-  - [Végpontok](#vegpontok)
-- [Frontend](#frontend)
-- [Használt eszközök](#hasznalt-eszkozok)
-
----
-
 ## 🛠️ Fejlesztési környezet
 
 - **Node.js**
