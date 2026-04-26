@@ -7,16 +7,16 @@
 
 ## 📋 Tartalomjegyzék
 
-- [Fejlesztési környezet](#fejlesztési-környezet)
-- [Adatbázis](#adatbázis)
+- [Fejlesztési környezet](#fejlesztesi-kornyezet)
+- [Adatbázis](#adatbazis)
 - [Backend](#backend)
-  - [Telepítés és futtatás](#telepítés-és-futtatás)
-  - [Mappa struktúra](#mappa-struktúra)
-  - [Használt packagek](#használt-packagek)
-  - [Biztonság](#biztonság)
-  - [Végpontok](#végpontok)
+  - [Telepítés és futtatás](#telepites-es-futtatas)
+  - [Mappa struktúra](#mappa-struktura)
+  - [Használt packagek](#hasznalt-packagek)
+  - [Biztonság](#biztonsag)
+  - [Végpontok](#vegpontok)
 - [Frontend](#frontend)
-- [Használt eszközök](#használt-eszközök)
+- [Használt eszközök](#hasznalt-eszkozok)
 
 ---
 
