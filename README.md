@@ -1,12 +1,34 @@
-# AUTOBOLT
+# 🚗 AUTOBOLT
+
 ## A projektről
 > Az Autobolt egy olyan autókereskedés, amely új és használt járművek széles választékát kínálja. Az oldalon a látogatók könnyen böngészhetnek különböző márkák és modellek között, legyen szó megbízható használt autóról vagy a legújabb, modern felszereltségű járművekről. A részletes leírások és átlátható keresési lehetőségek segítik a gyors döntést, miközben a kedvező árak és rugalmas ajánlatok minden vásárló számára vonzóvá teszik a kínálatot. Az Autobolt célja, hogy egyszerűvé és biztonságossá tegye az autóvásárlás folyamatát.
+
 ---
-## Fejlesztési környezet
+
+## 📋 Tartalomjegyzék
+
+- [Fejlesztési környezet](#fejlesztési-környezet)
+- [Adatbázis](#adatbázis)
+- [Backend](#backend)
+  - [Telepítés és futtatás](#telepítés-és-futtatás)
+  - [Mappa struktúra](#mappa-struktúra)
+  - [Használt packagek](#használt-packagek)
+  - [Biztonság](#biztonság)
+  - [Végpontok](#végpontok)
+- [Frontend](#frontend)
+- [Használt eszközök](#használt-eszközök)
+
+---
+
+## 🛠️ Fejlesztési környezet
+
 - **Node.js**
 - **MySQL**
+
 ---
-## Adatbázis
+
+## 🗄️ Adatbázis
+
 - felhasznalok
   - id
   - email
@@ -29,24 +51,34 @@
   - tomeg
   - hajtas
   - teljesitmeny
-    <br/>
-    <br/>
-  <img width="403" height="831" alt="image" src="https://github.com/user-attachments/assets/5182ceda-328b-42c7-9d45-570799f4532b" />
-  <br/>
-> <a href="https://drawsql.app/teams/team-5190/diagrams/autoboltt">Adatbázis diagram</a>
+
+<br/>
+
+<img width="403" height="831" alt="image" src="https://github.com/user-attachments/assets/5182ceda-328b-42c7-9d45-570799f4532b" />
+
+<br/>
+
+> 🔗 [Adatbázis diagram](https://drawsql.app/teams/team-5190/diagrams/autoboltt)
+
 ---
 
-## Backend
+## ⚙️ Backend
+
 A backend Node.js alapú, Express keretrendszerrel és MySQL adatbázissal működik. Feladata kommunikációs hidat létesíteni a frontend és az adatbázis között. A szerver kezeli a felhasználók hitelesítését, az autók adatait, valamint a képfeltöltéseket.
-#### Telepítés és futtatás
+
+### 🚀 Telepítés és futtatás
+
 ```bash
 git clone https://github.com/faat1455/autobolt_backend.git
 cd autobolt_backend
 npm install
 npm run dev
 ```
+
 ---
-## Mappa struktúra
+
+### 📁 Mappa struktúra
+
 - autobolt_backend/
   - uploads/ -> Feltöltött képek tárolója
   - index.js -> Az alkalmazás belépési pontja (összes végpont és middleware)
@@ -56,9 +88,11 @@ npm run dev
   - package.json -> Használt csomagok és függőségek
   - package-lock.json -> Függőségek pontos verziói
   - README.md -> Dokumentáció
+
 ---
 
-## Használt packagek
+### 📦 Használt packagek
+
 - **[bcryptjs](https://www.npmjs.com/package/bcryptjs)**
 - **[cookie-parser](https://www.npmjs.com/package/cookie-parser)**
 - **[cors](https://www.npmjs.com/package/cors)**
@@ -69,7 +103,8 @@ npm run dev
 - **[mysql2](https://www.npmjs.com/package/mysql2)**
 - **[body-parser](https://www.npmjs.com/package/body-parser)**
 - **[nodemon](https://www.npmjs.com/package/nodemon)** *(devDependency)*
-```bash
+
+```json
 "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
@@ -84,16 +119,20 @@ npm run dev
   "devDependencies": {
     "nodemon": "^3.1.7"
   }
-  ```
+```
+
 ---
-## Biztonság
+
+### 🔒 Biztonság
 
 - JWT token alapú hitelesítés
 - Jelszavak bcryptjs segítségével vannak hashelve
 - Middleware szinten történik az authentikáció (`verifyToken`, `verifyAdmin`)
 - A `.env` fájl tartalmaz minden érzékeny adatot – ne oszd meg publikusan!
+
 ---
-## Végpontok
+
+### 📡 Végpontok
 
 Az `index.js` kezeli az összes végpontot és middleware-t, közlekedési csomópontként igazgatva a kéréseket.
 
@@ -123,8 +162,10 @@ app.put('/api/cars/:id', ...)
 app.delete('/api/cars/:id', ...)
 ```
 `index.js`
+
 ---
-### Kép végpontok
+
+#### 🖼️ Kép végpontok
 
 | Művelet | HTTP | Végpont | Leírás |
 |---|---|---|---|
@@ -141,7 +182,7 @@ app.delete('/api/upload/:filename', ...);
 
 ---
 
-### Felhasználó végpontok
+#### 👤 Felhasználó végpontok
 
 | Művelet | HTTP | Végpont | Leírás |
 |---|---|---|---|
@@ -168,7 +209,7 @@ app.delete('/api/users/:id', verifyToken, verifyAdmin, ...);
 
 ---
 
-### Autó végpontok
+#### 🚗 Autó végpontok
 
 | Művelet | HTTP | Végpont | Leírás |
 |---|---|---|---|
@@ -188,13 +229,15 @@ app.delete('/api/cars/:id', verifyToken, verifyAdmin, ...);
 `index.js`
 
 ---
-## Frontend
 
-- **[Github Repo](https://github.com/faat1455/autobolt)**
-- **[Éló oldal](https://autobolt10.netlify.app/)**
+## 🖥️ Frontend
+
+- **GitHub repo:** [github.com/faat1455/autobolt](https://github.com/faat1455/autobolt)
+- **Élő oldal:** [autobolt10.netlify.app](https://autobolt10.netlify.app/)
 
 ---
-## Használt eszközök
+
+## 🧰 Használt eszközök
 
 - **[VS Code](https://code.visualstudio.com/)**
 - **[NPM](https://www.npmjs.com/)**
