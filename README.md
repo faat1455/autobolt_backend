@@ -220,6 +220,11 @@ app.delete('/api/cars/:id', verifyToken, verifyAdmin, ...);
 - **Élő oldal:** [autobolt10.netlify.app](https://autobolt10.netlify.app/)
 
 ---
+## 👤 Készítette
+- [Radácsi Norbert](https://github.com/faat1455/)
+- [Nagy Dániel](https://github.com/DaniNite510/)
+
+---
 
 ## 🧰 Használt eszközök
 
