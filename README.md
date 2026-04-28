@@ -68,7 +68,6 @@ npm run dev
   - uploads/ -> Feltöltött képek tárolója
   - index.js -> Az alkalmazás belépési pontja (összes végpont és middleware)
   - autobolt.sql -> Adatbázis struktúra
-  - .env -> Környezeti változók (DB kapcsolat, JWT titok)
   - .gitignore -> Nem követett fájlok (pl. .env, node_modules)
   - package.json -> Használt csomagok és függőségek
   - package-lock.json -> Függőségek pontos verziói
@@ -113,7 +112,7 @@ npm run dev
 - JWT token alapú hitelesítés
 - Jelszavak bcryptjs segítségével vannak hashelve
 - Middleware szinten történik az authentikáció (`verifyToken`, `verifyAdmin`)
-- A `.env` fájl tartalmaz minden érzékeny adatot – ne oszd meg publikusan!
+- A `.env` fájl tartalmaz a működéshez szükséges minden érzékeny adatot (PORT, HOST, DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, JWT_SECRET, JWT_EXPIRES_IN)
 
 ---
 
