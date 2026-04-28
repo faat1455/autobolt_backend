@@ -16,7 +16,6 @@ const PORT = process.env.PORT;
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN
 
-// ✅ Cookie beállítás
 const COOKIE_NAME = 'auth_token';
 const COOKIE_OPTS = {
     httpOnly: true,
@@ -35,8 +34,6 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
-//Elozo kepfeltolteses funkciohoz kellettek az 50mb-k
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -93,12 +90,10 @@ function verifyAdmin(req, res, next) {
 //  KÉP VÉGPONTOK
 // ═══════════════════════════════════════════════════════════════════════════════
 
-// ✅ MÓDOSÍTOTT: Csak filename mentése
 app.post('/api/upload', upload.single('kep'), (req, res) => {
     if (!req.file) {
         return res.status(400).json({ success: false, message: 'Nincs feltöltött fájl!' });
     }
-    // ✅ Csak a filename megy vissza!
     res.json({ success: true, filename: req.file.filename });
 });
 
@@ -182,7 +177,6 @@ app.post('/api/users/login', (req, res) => {
     });
 });
 
-// Logout - COOKIE_OPTS-ot és COOKIE_NAME-t törli
 app.post('/api/users/logout', verifyToken, (req, res) => {
     res.clearCookie(COOKIE_NAME, COOKIE_OPTS);
     res.status(200).json({ success: true, message: 'Sikeres kijelentkezés!' });
@@ -285,7 +279,7 @@ app.delete('/api/cars/:id', verifyToken, verifyAdmin, (req, res) => {
     });
 });
 
-// ─── Indítás/Listen ──────────────────────────────────────────────────────────────────
+// ─── Indítás ──────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
     console.log(`Szerver fut: http://localhost:${PORT}`);
 });
